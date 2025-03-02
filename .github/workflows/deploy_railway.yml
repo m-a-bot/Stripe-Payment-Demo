@@ -38,6 +38,7 @@ jobs:
           echo STRIPE_PUBLIC_KEY=${{ secrets.STRIPE_PUBLIC_KEY }} >> .env
           echo STRIPE_SECRET_KEY=${{ secrets.STRIPE_SECRET_KEY }} >> .env
           echo SECRET_KEY=${{ secrets.SECRET_KEY }} >> .env
+          echo ALLOWED_HOST=${{ secrets.ALLOWED_HOST }} >> .env
           cat .env
 
       - name: Login to Docker Hub
@@ -52,8 +53,8 @@ jobs:
       - name: Push Docker image
         run: docker push ${{ secrets.DOCKER_HUB_USERNAME }}/stripe-payment-demo:latest
       
-      - name: Deploy to Railway
-        run: railway up --service=${{ env.SVC_ID }} --image-name ${{ secrets.DOCKER_HUB_USERNAME }}/stripe-payment-demo:latest
+#      - name: Deploy to Railway
+#        run: railway up --service=${{ env.SVC_ID }}
 
       - name: Clean up Docker artifacts
         run: |

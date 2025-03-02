@@ -31,12 +31,19 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv("DEBUG") == "DEBUG"
+HOST = os.getenv("ALLOWED_HOST")
+
+ALLOWED_HOSTS = []
+
+if not DEBUG:
+    ALLOWED_HOSTS.append("*")
+
+if HOST:
+    ALLOWED_HOSTS.append(HOST)
 
 STRIPE_PUBLIC_KEY = os.getenv("STRIPE_PUBLIC_KEY")
 
 STRIPE_SECRET_KEY = os.getenv("STRIPE_SECRET_KEY")
-
-ALLOWED_HOSTS = []
 
 LOGGING = {
     "version": 1,
