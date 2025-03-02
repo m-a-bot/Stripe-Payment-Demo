@@ -39,6 +39,7 @@ jobs:
           echo STRIPE_SECRET_KEY=${{ secrets.STRIPE_SECRET_KEY }} >> .env
           echo SECRET_KEY=${{ secrets.SECRET_KEY }} >> .env
           echo ALLOWED_HOST=${{ secrets.ALLOWED_HOST }} >> .env
+          echo CSRF_TRUSTED_HOST=${{ CSRF_TRUSTED_HOST }} >> .env
           cat .env
 
       - name: Login to Docker Hub
