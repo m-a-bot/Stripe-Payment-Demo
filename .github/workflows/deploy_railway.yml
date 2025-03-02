@@ -6,14 +6,14 @@ on:
       - main
 
 jobs:
-  build-and-deploy:
+  deploy:
     runs-on: ubuntu-latest
-
+    env:
+      SVC_ID: ${{ secrets.RAILWAY_SERVICE_ID }}
+      RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
-
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -25,20 +25,6 @@ jobs:
 
       - name: Install Railway CLI
         run: npm install -g @railway/cli
-
-      - name: Verify Railway CLI
-        run: railway --version
-
-      - name: Login to Railway
-        run: |
-          export RAILWAY_API_TOKEN=${{ secrets.RAILWAY_API_TOKEN }}
-          railway login
-
-      - name: Link to Railway Project
-        run: railway link ${{ secrets.RAILWAY_PROJECT_ID }}
-
-      - name: Cleanup old deployments
-        run: railway prune
 
       - name: Create .env file
         run: |
@@ -52,9 +38,33 @@ jobs:
           echo STRIPE_PUBLIC_KEY=${{ secrets.STRIPE_PUBLIC_KEY }} >> .env
           echo STRIPE_SECRET_KEY=${{ secrets.STRIPE_SECRET_KEY }} >> .env
           echo SECRET_KEY=${{ secrets.SECRET_KEY }} >> .env
+          echo ALLOWED_HOST=${{ secrets.ALLOWED_HOST }} >> .env
+          echo CSRF_TRUSTED_HOST=${{ secrets.CSRF_TRUSTED_HOST }} >> .env
+          cat .env
 
-      - name: Upload environment variables
-        run: cat .env | railway env set
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_TOKEN }}
 
-      - name: Deploy to Railway
-        run: railway up --detach
+      - name: Build Docker image
+        run: docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/stripe-payment-demo:latest .
+
+      - name: Delete old Docker image
+        run: |
+          curl -X DELETE \
+          "https://hub.docker.com/v2/repositories/${{ secrets.DOCKER_HUB_USERNAME }}/stripe-payment-demo/tags/latest/"
+
+
+      - name: Push Docker image
+        run: docker push ${{ secrets.DOCKER_HUB_USERNAME }}/stripe-payment-demo:latest
+      
+#      - name: Deploy to Railway
+#        run: railway up --service=${{ env.SVC_ID }}
+
+      - name: Clean up Docker artifacts
+        run: |
+          docker image prune -a --force
+          docker container prune --force
+          docker system prune --force
