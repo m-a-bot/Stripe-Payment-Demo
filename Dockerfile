@@ -4,7 +4,7 @@ ENV PYTHONPATH=/src
 
 WORKDIR /src
 COPY app /src/app
-COPY ["pyproject.toml", "poetry.lock", ".env", "/src/"]
+COPY ["pyproject.toml", ".env", "/src/"]
 
 ENV POETRY_VERSION=1.8.2
 RUN pip install "poetry==$POETRY_VERSION"
