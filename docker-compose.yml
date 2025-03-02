@@ -1,0 +1,37 @@
+version: '3.3'
+services:
+  django_service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./app:/src/app
+    ports:
+      - "8080:8080"
+    networks:
+      app_net:
+    depends_on:
+      db:
+        condition: service_healthy
+  db:
+    image: postgres:16
+    ports:
+      - "5432:5432"
+    env_file:
+      - .env
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      app_net:
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U $POSTGRES_USER -d $POSTGRES_DB" ]
+      interval: 5s
+      timeout: 5s
+      retries: 7
+
+networks:
+  app_net:
+    name: app_net
+
+volumes:
+  postgres_data:
