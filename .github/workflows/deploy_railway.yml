@@ -32,10 +32,7 @@ jobs:
           RAILWAY_API_TOKEN: ${{ secrets.RAILWAY_API_TOKEN }}
         run: railway link --project ${{ secrets.RAILWAY_PROJECT_ID }}
 
-      - name: Cleanup old deployments
-        env:
-          RAILWAY_API_TOKEN: ${{ secrets.RAILWAY_API_TOKEN }}
-        run: railway delete --project ${{ secrets.RAILWAY_PROJECT_ID }}
+      # - name: Cleanup old deployments
 
       - name: Create .env file
         run: |
