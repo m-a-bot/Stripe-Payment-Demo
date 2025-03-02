@@ -50,7 +50,7 @@ jobs:
       - name: Upload environment variables
         env:
           RAILWAY_API_TOKEN: ${{ secrets.RAILWAY_API_TOKEN }}
-        run: cat .env | railway env set
+        run: cat .env | railway env set --env production
 
       - name: Deploy to Railway
         env:
