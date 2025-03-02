@@ -34,23 +34,7 @@ jobs:
 
       # - name: Cleanup old deployments
 
-      - name: Create .env file
-        run: |
-          touch .env
-          echo POSTGRES_DB=${{ secrets.POSTGRES_DB }} >> .env
-          echo POSTGRES_USER=${{ secrets.POSTGRES_USER }} >> .env
-          echo POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} >> .env
-          echo POSTGRES_HOST=${{ secrets.POSTGRES_HOST }} >> .env
-          echo POSTGRES_PORT=${{ secrets.POSTGRES_PORT }} >> .env
-          echo DEBUG=${{ secrets.DEBUG }} >> .env
-          echo STRIPE_PUBLIC_KEY=${{ secrets.STRIPE_PUBLIC_KEY }} >> .env
-          echo STRIPE_SECRET_KEY=${{ secrets.STRIPE_SECRET_KEY }} >> .env
-          echo SECRET_KEY=${{ secrets.SECRET_KEY }} >> .env
-
-      - name: Upload environment variables
-        env:
-          RAILWAY_API_TOKEN: ${{ secrets.RAILWAY_API_TOKEN }}
-        run: cat .env | railway env set --env production
+      # - name: Create .env file
 
       - name: Deploy to Railway
         env:
