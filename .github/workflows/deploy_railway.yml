@@ -13,8 +13,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-
-
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -30,9 +28,9 @@ jobs:
         run: railway --version
 
       - name: Login to Railway
-        run: |
-          export RAILWAY_API_TOKEN=${{ secrets.RAILWAY_API_TOKEN }}
-          railway login
+        env:
+          RAILWAY_API_TOKEN: ${{ secrets.RAILWAY_API_TOKEN }}
+        run: railway login
 
       - name: Link to Railway Project
         run: railway link ${{ secrets.RAILWAY_PROJECT_ID }}
