@@ -27,9 +27,12 @@ jobs:
       - name: Verify Railway CLI
         run: railway --version
 
-      - name: Link to Railway Project
+      - name: Login to Railway
         env:
           RAILWAY_API_TOKEN: ${{ secrets.RAILWAY_API_TOKEN }}
+        run: railway login -b
+
+      - name: Link to Railway Project
         run: railway link --project ${{ secrets.RAILWAY_PROJECT_ID }}
 
       # - name: Cleanup old deployments
@@ -37,6 +40,4 @@ jobs:
       # - name: Create .env file
 
       - name: Deploy to Railway
-        env:
-          RAILWAY_API_TOKEN: ${{ secrets.RAILWAY_API_TOKEN }}
         run: railway up --detach
